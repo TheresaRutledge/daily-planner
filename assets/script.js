@@ -1,44 +1,70 @@
+//current date
 var today = new moment().format('dddd MMMM Do, YYYY');
+//current hour
 var currentHour = parseInt(new moment().format('HH'));
 
-
+//array to hold all tasks
+var tasksArr = JSON.parse(localStorage.getItem('tasks')) || [];
 
 
 //set current date
 $('#currentDay').text(today);
 
-//check time to update input fields
-const checkTime = () => {
-$('.description').each(function(){
-    el=$(this);
-    blockTime = parseInt(this.id);
-    if(blockTime<currentHour){
-        el.removeClass('future');
-        el.addClass('past');
-    } else if(blockTime===currentHour){
-        el.removeClass('future');
-        el.addClass('present');
-    }
-})    
+//load tasks from localStorage
+const loadTasks = () => {
+    $.each(tasksArr, function (index) {
+        $(`textarea#${tasksArr[index].id}`).val(tasksArr[index].input);
+    })
 }
 
-//create array
-var tasksArr = [];
-//when save button is clicked save text of that specific block
-$('.saveBtn').on('click',function (){
-// textID = $(event.target).siblings('textarea');
-content = $(this).closest('textarea').text().trim();
+//check time to update background color
+const checkTime = () => {
+    $('.description').each(function () {
+        el = $(this);
+        blockTime = parseInt(this.id);
+        if (blockTime < currentHour) {
+            el.removeClass('future');
+            el.addClass('past');
+        } else if (blockTime === currentHour) {
+            el.removeClass('future');
+            el.addClass('present');
+        }
+    })
+}
 
-// console.log(textID);
-console.log(content);
+//when save button is clicked update array
+$('.saveBtn').on('click', function () {
+    let blockInput = $(this).siblings('textarea').val().trim();
+    let blockID = $(this).siblings('textarea').attr('id');
 
+    if (!checkTasks(blockID, blockInput)) {
+        tasksArr.push({ id: blockID, input: blockInput });
+    }
+    saveTasks(tasksArr);
 })
-//save text with id of block to array
-//when page loads load correct text to field based on id
+
+//check if task already exists, if so overwrite
+const checkTasks = (blockID, blockInput) => {
+    for (i = 0; i < tasksArr.length; i++) {
+        if (tasksArr[i].id === blockID) {
+            if (tasksArr[i].input) {
+                tasksArr[i].input = blockInput;
+                return true;
+            }
+        }
+    } return false;
+}
+
+//save to localStorage
+const saveTasks = (arr) => {
+    localStorage.setItem('tasks', JSON.stringify(tasksArr));
+}
 
 
+//loadtasks
+loadTasks();
 //check the time everyminute to update block colors
 checkTime();
-setInterval(checkTime,60000);
+setInterval(checkTime, 60000);
 
 
