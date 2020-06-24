@@ -4,12 +4,12 @@
 Manage your daily tasks hour by hour
 
 ## Built With
-*HTML
-*CSS
-*JS
-*JQuery
-*Bootstrap
-*MomentJS
+* HTML
+* CSS
+* JS
+* JQuery
+* Bootstrap
+* MomentJS
 
 ## Website
 https://theresarutledge.github.io/daily-planner/
